@@ -18,7 +18,7 @@ from sendsafely import SendSafely, Package
 from sendsafely.Progress import Progress
 from sendsafely.exceptions import GetPackageInformationFailedException, \
                                   DownloadFileException
-
+from urllib import parse
 
 class VerbosePrinter:
     def __init__(self, v):
@@ -101,6 +101,10 @@ def ssgrab(verbose=False,
         pkg_info = ss.get_package_information_from_link(link)
     except GetPackageInformationFailedException as err:
         print(f' {err}', file=sys.stderr)
+
+        packageID = parse.parse_qs(parse.urlparse(link).query)['thread'][0]
+        print(f'    Package ID {packageID}', file=sys.stderr)
+        print(f'    URL        {link}', file=sys.stderr)
         return []
 
     # Use the package info together with the keyCode in the link to prepare
